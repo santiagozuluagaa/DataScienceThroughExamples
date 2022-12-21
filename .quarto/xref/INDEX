@@ -1,0 +1,17 @@
+{
+  "index.qmd": {
+    "index.html": "e801f9b3"
+  },
+  "../p-values/p-values.qmd": {
+    "p-values.html": "de487847"
+  },
+  "p-values/p-values.qmd": {
+    "p-values.html": "e85d869c"
+  },
+  "01-p-values/p-values.qmd": {
+    "p-values.html": "fe63ee54"
+  },
+  "02-r-squared/r-squared.qmd": {
+    "r-squared.html": "a9b483d3"
+  }
+}

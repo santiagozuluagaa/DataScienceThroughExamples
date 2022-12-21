@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Data Science Through Examples",
+    "section": "",
+    "text": "Este es un sitio web, a modo de libro, donde se pretende recopilar información sobre conceptos y métodos relacionados con Ciencia de Datos a través de ejemplos sencillos.\nSitio web hecho con Quarto."
+  },
+  {
+    "objectID": "p-values/p-values.html#ejemplo",
+    "href": "p-values/p-values.html#ejemplo",
+    "title": "p-values",
+    "section": "Ejemplo",
+    "text": "Ejemplo\nUn fabricante de bombillas establece que la duración promedio de sus bombillas es de 10.000 horas. Un auditor externo propone que la duración promedio de las bombillas es en realidad menor de las 10.000 horas.\nSe sabe que la duración promedio de una bombilla se distribuye normalmente con \\(\\sigma^2 = 1000\\).\nEl auditor consiguió una muestra aleatoria de 28 bombillas y obtuvo una duración promedio de 9500 horas.\nRealice una prueba de hipótesis de acuerdo a lo planteado por el auditor externo."
+  },
+  {
+    "objectID": "p-values/p-values.html#definición",
+    "href": "p-values/p-values.html#definición",
+    "title": "p-values",
+    "section": "Definición",
+    "text": "Definición\nSea:\n\nX = Duración de una bombilla de la población de interés"
+  },
+  {
+    "objectID": "p-values/p-values.html#hipótesis",
+    "href": "p-values/p-values.html#hipótesis",
+    "title": "p-values",
+    "section": "Hipótesis",
+    "text": "Hipótesis\n\\[ H_0: \\mu = 10.000 \\ \\text{horas}  \n    \\ \\ \\ \\ \\\n   H_A: \\mu < 10.000 \\ \\text{horas}\\]"
+  },
+  {
+    "objectID": "p-values/p-values.html#estadístico-de-prueba",
+    "href": "p-values/p-values.html#estadístico-de-prueba",
+    "title": "p-values",
+    "section": "Estadístico de Prueba",
+    "text": "Estadístico de Prueba\nPara este caso, se tiene que:\n\n\\(X\\) se distribuye normalmente.\n\\(\\sigma^2 = 1000\\)\n\\(n = 28\\)\n\nEl estadístico de prueba es:\n\\[ Z_c =  \\dfrac{\\overline{X}-\\mu_0}{\\dfrac{\\sigma}{\\sqrt{n}}}\\]\n\n\nShow the code\nZ_c <- (9500 - 10000) / (1500 / sqrt(28))\n\n\n\\[ Z_c = \\dfrac{9500-10000}{\\dfrac{1500}{\\sqrt{28}}} = -1.7638\\]"
+  },
+  {
+    "objectID": "p-values/p-values.html#valor-p",
+    "href": "p-values/p-values.html#valor-p",
+    "title": "p-values",
+    "section": "Valor p",
+    "text": "Valor p\nEs la probabilidad de obtener un valor para el estadístico de prueba que sea igual o más extremo de contradictorio a \\(H_0\\) que el valor obtenido, suponiendo que \\(H_0\\) es verdadera.\n\\[ \\text{valor p} =  P(Z \\leq Z_c) =P(Z < Z_c)  \\]\nPara este caso:\n\n\nShow the code\np <- pnorm(Z_c)\n\n\n\\[ \\text{valor p} = P(Z < Z_c) = 0.0389\\]\n\n\nShow the code\nggplot(data.frame(x = c(-3, 3)), aes(x)) +\n   stat_function(fun = dnorm,\n                 geom = \"line\",\n                 xlim = c(-3, 3)) +\n   stat_function(fun = dnorm,\n                 geom = \"area\",\n                 fill = \"blue\",\n                 xlim = c(-3, Z_c)) +\n   geom_vline(xintercept = Z_c, colour=\"red\", linetype = \"longdash\") +\n   annotate(\"text\", label = \"Z_c\", x = -2, y = 0.3) +\n   annotate(\"text\", label = \"Valores igual o \\n más extremos de \\n contradictorio \\n que Z_c a la \\n hipótesis nula\", x = -2.5, y = 0.2) +\n    annotate(\"text\", label = \"El área en azul \\n representa tal \\n probabilidad\", x = -2.5, y = 0.1, color = \"blue\") +\n   geom_segment(\n       aes(x = Z_c, y = 0, xend = -3, yend = 0), \n       color = \"red\",\n       size = 1.2,\n       arrow = arrow(length = unit(4, \"mm\"))\n       ) +\n   xlim(-3, 3) +\n   labs(x = \"Z\", y = \"density\")\n\n\n\n\n\n¿Por qué se rechaza la hipótesis nula para valores bajos de \\(H_0\\)?\nEl valor se calcula suponiendo que la hipótesis nula es verdadera.\nPor ejemplo, para este caso, suponiendo que \\(\\mu = 10000 \\ \\text{horas}\\), la probabilidad de que \\(Z_c < -1.7638\\) es de \\(0.0389\\) (valor p).\nEntre más pequeño es valor p, más contradictorios son los datos a \\(H_0\\).\nEn este caso, con cualquier nivel de significancia (\\(\\alpha\\)) mayor a \\(0.0389\\), se rechaza la hipótesis nula.\nDe aquí se deriva una definición alternativa para el valor p (o nivel de significación observado): “es el nivel de significancia más pequeño al cual \\(H_0\\) sería rechazada”."
+  },
+  {
+    "objectID": "01-p-values/p-values.html#ejemplo",
+    "href": "01-p-values/p-values.html#ejemplo",
+    "title": "Valor p",
+    "section": "Ejemplo",
+    "text": "Ejemplo\nUn fabricante de bombillas establece que la duración promedio de sus bombillas es de 10.000 horas. Un auditor externo propone que la duración promedio de las bombillas es en realidad menor de las 10.000 horas.\nSe sabe que la duración promedio de una bombilla se distribuye normalmente con \\(\\sigma^2 = 1000\\).\nEl auditor consiguió una muestra aleatoria de 28 bombillas y obtuvo una duración promedio de 9500 horas.\nRealice una prueba de hipótesis de acuerdo a lo planteado por el auditor externo."
+  },
+  {
+    "objectID": "01-p-values/p-values.html#definición",
+    "href": "01-p-values/p-values.html#definición",
+    "title": "Valor p",
+    "section": "Definición",
+    "text": "Definición\nSea:\n\nX = Duración de una bombilla de la población de interés"
+  },
+  {
+    "objectID": "01-p-values/p-values.html#hipótesis",
+    "href": "01-p-values/p-values.html#hipótesis",
+    "title": "Valor p",
+    "section": "Hipótesis",
+    "text": "Hipótesis\n\\[ H_0: \\mu = 10.000 \\ \\text{horas}  \n    \\ \\ \\ \\ \\\n   H_A: \\mu < 10.000 \\ \\text{horas}\\]"
+  },
+  {
+    "objectID": "01-p-values/p-values.html#estadístico-de-prueba",
+    "href": "01-p-values/p-values.html#estadístico-de-prueba",
+    "title": "Valor p",
+    "section": "Estadístico de Prueba",
+    "text": "Estadístico de Prueba\nPara este caso, se tiene que:\n\n\\(X\\) se distribuye normalmente.\n\\(\\sigma^2 = 1000\\)\n\\(n = 28\\)\n\nEl estadístico de prueba es:\n\\[ Z_c =  \\dfrac{\\overline{X}-\\mu_0}{\\dfrac{\\sigma}{\\sqrt{n}}}\\]\n\n\nShow the code\nZ_c <- (9500 - 10000) / (1500 / sqrt(28))\n\n\n\\[ Z_c = \\dfrac{9500-10000}{\\dfrac{1500}{\\sqrt{28}}} = -1.7638\\]"
+  },
+  {
+    "objectID": "01-p-values/p-values.html#valor-p",
+    "href": "01-p-values/p-values.html#valor-p",
+    "title": "Valor p",
+    "section": "Valor p",
+    "text": "Valor p\nEs la probabilidad de obtener un valor para el estadístico de prueba que sea igual o más extremo de contradictorio a \\(H_0\\) que el valor obtenido, suponiendo que \\(H_0\\) es verdadera.\n\\[ \\text{valor p} =  P(Z \\leq Z_c) =P(Z < Z_c)  \\]\nPara este caso:\n\n\nShow the code\np <- pnorm(Z_c)\n\n\n\\[ \\text{valor p} = P(Z < Z_c) = 0.0389\\]\n\n\nShow the code\nggplot(data.frame(x = c(-3, 3)), aes(x)) +\n   stat_function(fun = dnorm,\n                 geom = \"line\",\n                 xlim = c(-3, 3)) +\n   stat_function(fun = dnorm,\n                 geom = \"area\",\n                 fill = \"blue\",\n                 xlim = c(-3, Z_c)) +\n   geom_vline(xintercept = Z_c, colour=\"red\", linetype = \"longdash\") +\n   annotate(\"text\", label = \"Z_c\", x = -2, y = 0.3) +\n   annotate(\"text\", label = \"Valores igual o \\n más extremos de \\n contradictorio \\n que Z_c a la \\n hipótesis nula\", x = -2.5, y = 0.2) +\n    annotate(\"text\", label = \"El área en azul \\n representa tal \\n probabilidad\", x = -2.5, y = 0.1, color = \"blue\") +\n   geom_segment(\n       aes(x = Z_c, y = 0, xend = -3, yend = 0), \n       color = \"red\",\n       size = 1.2,\n       arrow = arrow(length = unit(4, \"mm\"))\n       ) +\n   xlim(-3, 3) +\n   labs(x = \"Z\", y = \"density\")\n\n\n\n\n\n¿Por qué se rechaza la hipótesis nula para valores bajos de \\(H_0\\)?\nEl valor se calcula suponiendo que la hipótesis nula es verdadera.\nPor ejemplo, para este caso, suponiendo que \\(\\mu = 10000 \\ \\text{horas}\\), la probabilidad de que \\(Z_c < -1.7638\\) es de \\(0.0389\\) (valor p).\nEntre más pequeño es valor p, más contradictorios son los datos a \\(H_0\\).\nEn este caso, con cualquier nivel de significancia (\\(\\alpha\\)) mayor a \\(0.0389\\), se rechaza la hipótesis nula.\nDe aquí se deriva una definición alternativa para el valor p (o nivel de significación observado): “es el nivel de significancia más pequeño al cual \\(H_0\\) sería rechazada”."
+  },
+  {
+    "objectID": "02-r-squared/r-squared.html#librerías",
+    "href": "02-r-squared/r-squared.html#librerías",
+    "title": "R Cuadrado",
+    "section": "Librerías",
+    "text": "Librerías\n\n\nShow the code\nlibrary(ggplot2)\nlibrary(dplyr)\noptions(scipen = 999)"
+  },
+  {
+    "objectID": "02-r-squared/r-squared.html#ejemplo-1",
+    "href": "02-r-squared/r-squared.html#ejemplo-1",
+    "title": "R Cuadrado",
+    "section": "Ejemplo 1",
+    "text": "Ejemplo 1\nSe trata de explicar el precio de una casa (en miles de dólares) usando su tamaño (m2).\n\n\nShow the code\ncasas <- data.frame(price = c(120, 85, 67, 200, 110, 154), \n                    size = c(140, 92, 70, 150, 100, 120))\n\nmean_price <- mean(casas$price)\n\n\n\nTotal Sum of Squares\n\n\nShow the code\n# Dataframe for the segments of error\ncasas_segments_mean <- casas %>% mutate(x = size,\n                                        xend = size,\n                                        y = price,\n                                        yend = mean_price)\n\nggplot(casas) +\n  geom_point(aes(x = size, y = price), size = 3) +\n  geom_hline(yintercept = mean_price, color = \"red\", size = 1) +\n  geom_segment(data = casas_segments_mean, aes(x = x, y = y, xend = xend, yend = yend), \n               colour = \"blue\",\n               size = 1) \n\n\n\n\n\n\n\nSum of Squares of Residuals.\n\n\nShow the code\n#|message: false\n#|warning: false\nlin_mod <- lm(price ~ size, data = casas)\ncasas$predicted_price <- lin_mod$fitted.values\n\n\nggplot(casas, aes(x = size, y = price)) +\n  geom_point(size = 3) +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"red\", size = 1) +  \n  geom_segment(aes(xend = size, yend = predicted_price), color = \"darkgreen\", size = 1)\n\n\n`geom_smooth()` using formula 'y ~ x'"
+  },
+  {
+    "objectID": "02-r-squared/r-squared.html#r-cuadrado-cálculo",
+    "href": "02-r-squared/r-squared.html#r-cuadrado-cálculo",
+    "title": "R Cuadrado",
+    "section": "R cuadrado cálculo",
+    "text": "R cuadrado cálculo\n\n\nShow the code\n# Total Sum of Squares. SUM of (y_i - y_mean)^2\nTSS <- sum((casas$price - mean_price)^2)\n\n# Sum of Squares of Residuals. SUM of (y_i - y_hat)^2\nRSS <- sum((casas$price - casas$predicted_price)^2)\n\n# R^2\nR_s <- (TSS - RSS)/(TSS)\n\n# Cálculo obtenido lm\nR_s_lm <- summary(lin_mod)$r.squared\n\nprint(c(R_s, R_s_lm))\n\n\n[1] 0.7544956 0.7544956\n\n\nNote que \\[ R^2 = \\dfrac{TSS-RSS}{TSS} = \\dfrac{TSS}{TSS} - \\dfrac{RSS}{TSS} \\]\n\\[ R^2 = 1 - \\dfrac{RSS}{TSS}\\]\nPara nuestro ejemplo:\n\\[ R^2 = \\dfrac{\n                \\overbrace{11647}^{\\text{VAR a explicar}}     \n                -\n                \\overbrace{2859}^{\\text{VAR NO explicada por modelo}}\n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n       = \\dfrac{\n                \\overbrace{11647 - 2859}^{\\text{VAR explicada por el modelo}}  \n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n      = 0.7545\\]\n\\(R^2\\) establece el porcentaje de variación en el precio (variable respuesta) que es explicado por el modelo, es decir, por el tamaño tamaño (variable explicativa). En nuestro ejemplo, el 75.45% de variación en el precio es explicado por el tamaño."
+  }
+]
