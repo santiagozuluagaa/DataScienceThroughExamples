@@ -95,6 +95,62 @@
     "href": "02-r-squared/r-squared.html#r-cuadrado-cálculo",
     "title": "R Cuadrado",
     "section": "R cuadrado cálculo",
-    "text": "R cuadrado cálculo\n\n\nShow the code\n# Total Sum of Squares. SUM of (y_i - y_mean)^2\nTSS <- sum((casas$price - mean_price)^2)\n\n# Sum of Squares of Residuals. SUM of (y_i - y_hat)^2\nRSS <- sum((casas$price - casas$predicted_price)^2)\n\n# R^2\nR_s <- (TSS - RSS)/(TSS)\n\n# Cálculo obtenido lm\nR_s_lm <- summary(lin_mod)$r.squared\n\nprint(c(R_s, R_s_lm))\n\n\n[1] 0.7544956 0.7544956\n\n\nNote que \\[ R^2 = \\dfrac{TSS-RSS}{TSS} = \\dfrac{TSS}{TSS} - \\dfrac{RSS}{TSS} \\]\n\\[ R^2 = 1 - \\dfrac{RSS}{TSS}\\]\nPara nuestro ejemplo:\n\\[ R^2 = \\dfrac{\n                \\overbrace{11647}^{\\text{VAR a explicar}}     \n                -\n                \\overbrace{2859}^{\\text{VAR NO explicada por modelo}}\n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n       = \\dfrac{\n                \\overbrace{11647 - 2859}^{\\text{VAR explicada por el modelo}}  \n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n      = 0.7545\\]\n\\(R^2\\) establece el porcentaje de variación en el precio (variable respuesta) que es explicado por el modelo, es decir, por el tamaño tamaño (variable explicativa). En nuestro ejemplo, el 75.45% de variación en el precio es explicado por el tamaño."
+    "text": "R cuadrado cálculo\n\n\nShow the code\n# Total Sum of Squares. SUM of (y_i - y_mean)^2\nTSS <- sum((casas$price - mean_price)^2)\n\n# Sum of Squares of Residuals. SUM of (y_i - y_hat)^2\nRSS <- sum((casas$price - casas$predicted_price)^2)\n\n# R^2\nR_s <- (TSS - RSS)/(TSS)\n\n# Cálculo obtenido lm\nR_s_lm <- summary(lin_mod)$r.squared\n\nprint(c(R_s, R_s_lm))\n\n\n[1] 0.7544956 0.7544956\n\n\nNote que \\[ R^2 = \\dfrac{TSS-RSS}{TSS} = \\dfrac{TSS}{TSS} - \\dfrac{RSS}{TSS} \\]\n\\[ R^2 = 1 - \\dfrac{RSS}{TSS}\\]\nPara nuestro ejemplo:\n\\[ R^2 = \\dfrac{\n                \\overbrace{11647}^{\\text{VAR a explicar}}     \n                -\n                \\overbrace{2859}^{\\text{VAR NO explicada por modelo}}\n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n       = \\dfrac{\n                \\overbrace{11647 - 2859}^{\\text{VAR explicada por el modelo}}  \n                }\n                {\n                \\underbrace{11647}_{\\text{VAR a explicar}}\n                }\n      = 0.7545\\]\n\\(R^2\\) establece el porcentaje de variación en el precio (variable respuesta) que es explicado por el modelo, es decir, por el tamaño (variable explicativa). En nuestro ejemplo, el 75.45% de variación en el precio es explicado por el tamaño."
+  },
+  {
+    "objectID": "04-classification-metrics/classification-metrics.html#matriz-de-confusión",
+    "href": "04-classification-metrics/classification-metrics.html#matriz-de-confusión",
+    "title": "Clasificación (métricas)",
+    "section": "Matriz de confusión",
+    "text": "Matriz de confusión\n\n\n\nMatriz de confusión\n\n\n\nSensitivity (sensitividad)\n\\[ \\text{Sensitivity} = \\dfrac{\\text{True Positives}}\n                              {\\text{True Positives + False Negatives}}  \\]\n\\[ \\text{Sensitivity}\n                      = p(\\text{Identificado con la enfermedad | Tiene la enfermedad }) \\]\nCuando se habla de “identificado con la enfermedad”, esto supone que el modelo ha predicho que tiene la enfermedad.\nLa sensitividad establece qué % de los pacientes con la enfermedad son correctamente clasificados. En un test médico como el de covid, una alta sensitividad implica que si el paciente tiene covid, el test tiene alta capacidad de detectarlo.\nEs la respuesta a la siguiente pregunta:\nSi un paciente tiene la enfermedad, ¿cuál es la probabilidad de que sea detectada?\n\n\nSpecificity (especificidad)\n\\[\\text{Specificity} = \\dfrac{\\text{True Negatives}}\n                              {\\text{True Negatives + False Positives}}\\]\n\\[\\text{Specificity}= p(\\text{Identificado sin la enfermedad | No tiene la enfermedad, ie, sano} )\\]\nLa especificidad establece el qué % de los pacientes sanos son correctamente clasificados. En un test médico como el de covid, una alta especificidad implica que si el paciente NO tiene covid, el test tiene una alta capacidad de producir un resultado NEGATIVO.\nEs la respuesta a la siguiente pregunta:\nSi un paciente está sano, ¿cuál es la probabilidad de que el resultado de la prueba sea NEGATIVO?\n\n\nError rate (Tasa de error)\n\\[ \\text{Error rate} = \\dfrac{\\text{False Positives + False Negatives}}{{n}}\\]\nLa tasa de error es el % de pacientes que son clasificados incorrectamente.\n\n\nAccuracy\n\\[ \\text{Accuracy} = \\dfrac{\\text{True Positives + True Negatives}}\n                           {n}\\]\nEs el % de pacientes que son clasificados correctamente.\n\n\nPrecision\n\\[ \\text{Precision} = \\dfrac{\\text{True Positives}}{\\text{True Positives + False Positives}}\\]\nDe los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado correctamente?"
+  },
+  {
+    "objectID": "04-classification-metrics/classification-metrics.html#resumen",
+    "href": "04-classification-metrics/classification-metrics.html#resumen",
+    "title": "Clasificación (métricas)",
+    "section": "Resumen",
+    "text": "Resumen\n\n\n\n\n\n\n\n\n\nMétrica\nOtros nombres\nFórmula\nDescripción\n\n\n\n\nError rate\nES: Tasa de error\n\\(\\dfrac{FP+FN}{n}\\)\n% de pacientes que son clasificados incorrectamente\n\n\nAccuracy\nES: Precisión\n\\(\\dfrac{TP+TN}{n}\\)\n% de pacientes que son clasificados correctamente\n\n\nSensivity\nES: Sensitividad Recall True Positive Rate\n\\(\\dfrac{TP}{TP+FN} = \\dfrac{TP}{P}\\)\n% de pacientes con la enfermedad que son clasificados correctamente\n\n\nSpecificity\nES: Especificidad True Negative Rate\n\\(\\dfrac{TN}{FP+TN} = \\dfrac{TN}{N}\\)\n% de pacientes sin la enfermedad (sanos) que son clasificados correctamente\n\n\nPrecision\nPositive Predicted Value\n\\(\\dfrac{TP}{TP+FP}\\)\nDe los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado correctamente?\n\n\n\n\n\n\nDescripción\nDefinición\n\n\n\n\nTotal de pacientes\n\\(n = TP + FP + FN + TN\\)\n\n\nPacientes con la enfermedad\n\\(P = TP + FN\\)\n\n\nPacientes sin la enfermadad (sanos)\n\\(N = FP + TN\\)"
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#ejemplo",
+    "href": "03-bayes-theorem/bayes-theorem.html#ejemplo",
+    "title": "Teorema de Bayes",
+    "section": "Ejemplo",
+    "text": "Ejemplo\nConsidere los siguientes eventos, en relación a la detección de correos electrónicos que son spam.\n\nContener la palabra ‘oferta’.\nSer SPAM.\n\nSe muestra la tabla de contigencia para 200 correos en relación a estos eventos:"
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#representación-visual",
+    "href": "03-bayes-theorem/bayes-theorem.html#representación-visual",
+    "title": "Teorema de Bayes",
+    "section": "Representación visual",
+    "text": "Representación visual\nVisualmente, se puede representar como:\n\n\nCada cuadro representa un correo, en caso de contener la abreviación ‘Of’, esto indica que el correo es Spam."
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#probabilidad-condicional",
+    "href": "03-bayes-theorem/bayes-theorem.html#probabilidad-condicional",
+    "title": "Teorema de Bayes",
+    "section": "Probabilidad condicional",
+    "text": "Probabilidad condicional\nLa pregunta natural que surge es la siguiente:\n¿cuál es la probabilidad de que un correo sea spam si contiene la palabra ‘oferta’?\nA partir de esta probabilidad, se podrá decidir si el correo se envía a la bandeja de Spam o no.\nUsando el Teorema de Bayes, se obtiene:\n\\[ P (\\text{Spam | Contiene la palabra oferta}) =\n    \\dfrac{P (\\text{Contiene la palabra oferta | Spam}) \\cdot P(\\text{Spam})}\n          {P (\\text{Contiene la palabra oferta})}\\]"
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#derivación-visual",
+    "href": "03-bayes-theorem/bayes-theorem.html#derivación-visual",
+    "title": "Teorema de Bayes",
+    "section": "Derivación visual",
+    "text": "Derivación visual\nSupongamos que la representación visual es un rectángulo de área 1 representando probabilidad.\nTenemos que:\n\nDado que:\n\\[ P(\\text{Spam} \\cap \\text{Contiene la palabra oferta}) =\n    P(\\text{Contiene la palabra oferta|Spam}) \\cdot P(\\text{Spam}) \\]\n\\[ P(\\text{NO Spam} \\cap \\text{Contiene la palabra oferta}) =\n    P(\\text{Contiene la palabra oferta|NO Spam}) \\cdot P(\\text{NO Spam}) \\]\nSe reemplaza y se obtiene:\n\nEl resultado final es:\n\\[ P (\\text{Spam | Contiene la palabra oferta}) =\n    \\dfrac{P (\\text{Contiene la palabra oferta | Spam}) \\cdot P(\\text{Spam})}\n          {P (\\text{Contiene la palabra oferta})}\\]\nEste resultado coincide con lo ya antes mostrado por el Teorema de Bayes."
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#actualización-de-probabilidad",
+    "href": "03-bayes-theorem/bayes-theorem.html#actualización-de-probabilidad",
+    "title": "Teorema de Bayes",
+    "section": "Actualización de probabilidad",
+    "text": "Actualización de probabilidad\nDe la derivación visual, se tiene que:\n\\[ P (\\text{Spam | Contiene la palabra oferta}) = \\dfrac{16}{16+32} = \\dfrac{16}{48} = \\dfrac{1}{3}\\]\nUsando el teorema de Bayes:\n\\[ P (\\text{Spam | Contiene la palabra oferta}) =\n    \\dfrac{P (\\text{Contiene la palabra oferta | Spam}) }\n          {P (\\text{Contiene la palabra oferta})} \\cdot P(\\text{Spam})\\]\nEsto se puede ver de la siguiente forma, \\(P(\\text{Spam | Contiene la palabra oferta})\\) es una escalación de \\(P(\\text{Spam})\\) por el factor \\(\\dfrac{P(\\text{Contiene la palabra oferta | Spam}) }{P (\\text{Contiene la palabra oferta})}\\)\nPara este ejemplo:\n\\[\\dfrac{P(\\text{Contiene la palabra oferta | Spam}) }{P (\\text{Contiene la palabra oferta})} = \\dfrac{16/40}{48/200} = 1.6667\\] Así:\n\\[ P (\\text{Spam | Contiene la palabra oferta}) = 1.6667 \\cdot P(\\text{Spam})\\]\nEs decir, la probabilidad de que sea Spam de aquellos correos con la palabra oferta es 1.6667 veces que la probabilidad (general) de que sea Spam.\n\\[ P (\\text{Spam | Contiene la palabra oferta}) = 1.6667 \\cdot \\dfrac{40}{200} = \\dfrac{1}{3}\\]\n\nEjemplo adicional\nConsidere el siguiente enunciado: “Cuando un equipo anota el primer gol, las probabilidades de victoria suben un 20%”, esto se traduce en:\n\\[ P(\\text{Ganar}|\\text{Anotar primer gol})= 1.20 \\times P(\\text{Ganar})\\] Por lo que:\n\\[ \\dfrac{P(\\text{Anotar primer gol|Ganar})}{P(\\text{Anotar primer gol})} = 1.20\\]"
+  },
+  {
+    "objectID": "03-bayes-theorem/bayes-theorem.html#consideraciones-conceptuales",
+    "href": "03-bayes-theorem/bayes-theorem.html#consideraciones-conceptuales",
+    "title": "Teorema de Bayes",
+    "section": "Consideraciones conceptuales",
+    "text": "Consideraciones conceptuales\n\nSi A y B son independientes: \\(P(A \\cap B)=P(A) \\cdot P(B)\\)\nSi A y B no son independientes: \\(P(A \\cap B) = P(B|A) \\cdot P(A)\\)\n\\(P(B|A)= \\underbrace{P(B \\cap A|A)}_{\\text{A ya se dio}}\\neq \\underbrace{P(B \\cap A)}_{\\text{A NO se ha dado}}\\)"
   }
 ]

@@ -9,6 +9,8 @@ book:
     - index.qmd
     - 01-p-values\p-values.qmd
     - 02-r-squared\r-squared.qmd
+    - 03-bayes-theorem\bayes-theorem.qmd
+    - 04-classification-metrics\classification-metrics.qmd
 
 format:
   html:
