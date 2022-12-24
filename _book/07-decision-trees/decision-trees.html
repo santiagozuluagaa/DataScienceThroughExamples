@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science Through Examples - Valor p</title>
+<title>Data Science Through Examples - Decision Trees</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../02-r-squared/r-squared.html" rel="next">
-<link href="../index.html" rel="prev">
+<link href="../06-logistic-regression/logistic-regression.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -134,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Valor p</h1>
+      <h1 class="quarto-secondary-nav-title">Decision Trees</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -164,7 +163,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../01-p-values/p-values.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></a>
+  <a href="../01-p-values/p-values.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -189,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Decision Trees</span></a>
+  <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Decision Trees</span></a>
   </div>
 </li>
     </ul>
@@ -201,11 +200,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#ejemplo" id="toc-ejemplo" class="nav-link active" data-scroll-target="#ejemplo">Ejemplo</a></li>
-  <li><a href="#definición" id="toc-definición" class="nav-link" data-scroll-target="#definición">Definición</a></li>
-  <li><a href="#hipótesis" id="toc-hipótesis" class="nav-link" data-scroll-target="#hipótesis">Hipótesis</a></li>
-  <li><a href="#estadístico-de-prueba" id="toc-estadístico-de-prueba" class="nav-link" data-scroll-target="#estadístico-de-prueba">Estadístico de Prueba</a></li>
-  <li><a href="#valor-p" id="toc-valor-p" class="nav-link" data-scroll-target="#valor-p">Valor p</a></li>
+  <li><a href="#librerías" id="toc-librerías" class="nav-link active" data-scroll-target="#librerías">Librerías</a></li>
+  <li><a href="#ejemplo" id="toc-ejemplo" class="nav-link" data-scroll-target="#ejemplo">Ejemplo</a></li>
+  <li><a href="#árbol-de-decisión" id="toc-árbol-de-decisión" class="nav-link" data-scroll-target="#árbol-de-decisión">Árbol de decisión</a></li>
+  <li><a href="#construcción-manual" id="toc-construcción-manual" class="nav-link" data-scroll-target="#construcción-manual">Construcción manual</a>
+  <ul class="collapse">
+  <li><a href="#variable-como-nodo-principal" id="toc-variable-como-nodo-principal" class="nav-link" data-scroll-target="#variable-como-nodo-principal">Variable como nodo principal</a></li>
+  <li><a href="#siguiente-rama" id="toc-siguiente-rama" class="nav-link" data-scroll-target="#siguiente-rama">Siguiente rama</a></li>
+  </ul></li>
+  <li><a href="#gini-impurity-intuitivamente" id="toc-gini-impurity-intuitivamente" class="nav-link" data-scroll-target="#gini-impurity-intuitivamente">Gini Impurity (intuitivamente)</a></li>
   </ul>
 </nav>
     </div>
@@ -214,7 +217,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Valor p</h1>
+<h1 class="title d-none d-lg-block">Decision Trees</h1>
 </div>
 
 
@@ -229,96 +232,142 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<section id="librerías" class="level2">
+<h2 class="anchored" data-anchor-id="librerías">Librerías</h2>
 <div class="cell">
 <details open="">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
 <section id="ejemplo" class="level2">
 <h2 class="anchored" data-anchor-id="ejemplo">Ejemplo</h2>
-<p>Un fabricante de bombillas establece que la duración promedio de sus bombillas es de 10.000 horas. Un auditor externo propone que la duración promedio de las bombillas es en realidad menor de las 10.000 horas.</p>
-<p>Se sabe que la duración promedio de una bombilla se distribuye normalmente con <span class="math inline">\(\sigma^2 = 1000\)</span>.</p>
-<p>El auditor consiguió una muestra aleatoria de 28 bombillas y obtuvo una duración promedio de 9500 horas.</p>
-<p>Realice una prueba de hipótesis de acuerdo a lo planteado por el auditor externo.</p>
-</section>
-<section id="definición" class="level2">
-<h2 class="anchored" data-anchor-id="definición">Definición</h2>
-<p>Sea:</p>
+<p>Se tienen datos sobre 10 pasajeros del titanic, se conoce:</p>
 <ul>
-<li>X = Duración de una bombilla de la población de interés</li>
+<li>survive: Sobrevivió al hundimiento o no.</li>
+<li>class: Primera o segunda clase.</li>
+<li>sex: Hombre o mujer.</li>
 </ul>
-</section>
-<section id="hipótesis" class="level2">
-<h2 class="anchored" data-anchor-id="hipótesis">Hipótesis</h2>
-<p><span class="math display">\[ H_0: \mu = 10.000 \ \text{horas}  
-    \ \ \ \ \
-   H_A: \mu &lt; 10.000 \ \text{horas}\]</span></p>
-</section>
-<section id="estadístico-de-prueba" class="level2">
-<h2 class="anchored" data-anchor-id="estadístico-de-prueba">Estadístico de Prueba</h2>
-<p>Para este caso, se tiene que:</p>
-<ul>
-<li><span class="math inline">\(X\)</span> se distribuye normalmente.</li>
-<li><span class="math inline">\(\sigma^2 = 1000\)</span></li>
-<li><span class="math inline">\(n = 28\)</span></li>
-</ul>
-<p>El estadístico de prueba es:</p>
-<p><span class="math display">\[ Z_c =  \dfrac{\overline{X}-\mu_0}{\dfrac{\sigma}{\sqrt{n}}}\]</span></p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Z_c <span class="ot">&lt;-</span> (<span class="dv">9500</span> <span class="sc">-</span> <span class="dv">10000</span>) <span class="sc">/</span> (<span class="dv">1500</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">28</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p><span class="math display">\[ Z_c = \dfrac{9500-10000}{\dfrac{1500}{\sqrt{28}}} = -1.7638\]</span></p>
-</section>
-<section id="valor-p" class="level2">
-<h2 class="anchored" data-anchor-id="valor-p">Valor p</h2>
-<p>Es la probabilidad de obtener un valor para el estadístico de prueba que sea igual o más extremo de contradictorio a <span class="math inline">\(H_0\)</span> que el valor obtenido, suponiendo que <span class="math inline">\(H_0\)</span> es verdadera.</p>
-<p><span class="math display">\[ \text{valor p} =  P(Z \leq Z_c) =P(Z &lt; Z_c)  \]</span></p>
-<p>Para este caso:</p>
-<div class="cell">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(Z_c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p><span class="math display">\[ \text{valor p} = P(Z &lt; Z_c) = 0.0389\]</span></p>
-<div class="cell">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geom =</span> <span class="st">"line"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geom =</span> <span class="st">"area"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"blue"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, Z_c)) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> Z_c, <span class="at">colour=</span><span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"longdash"</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"Z_c"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">2</span>, <span class="at">y =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"Valores igual o </span><span class="sc">\n</span><span class="st"> más extremos de </span><span class="sc">\n</span><span class="st"> contradictorio </span><span class="sc">\n</span><span class="st"> que Z_c a la </span><span class="sc">\n</span><span class="st"> hipótesis nula"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"El área en azul </span><span class="sc">\n</span><span class="st"> representa tal </span><span class="sc">\n</span><span class="st"> probabilidad"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.1</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_segment</span>(</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Z_c, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> <span class="sc">-</span><span class="dv">3</span>, <span class="at">yend =</span> <span class="dv">0</span>), </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"red"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> <span class="fl">1.2</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"mm"</span>))</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Z"</span>, <span class="at">y =</span> <span class="st">"density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"titanic.csv"</span>, <span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="p-values_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">class</th>
+<th style="text-align: left;">sex</th>
+<th style="text-align: left;">survive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p><strong>¿Por qué se rechaza la hipótesis nula para valores bajos de</strong> <span class="math inline">\(H_0\)</span>?</p>
-<p>El valor se calcula suponiendo que la hipótesis nula es verdadera.</p>
-<p>Por ejemplo, para este caso, suponiendo que <span class="math inline">\(\mu = 10000 \ \text{horas}\)</span>, la probabilidad de que <span class="math inline">\(Z_c &lt; -1.7638\)</span> es de <span class="math inline">\(0.0389\)</span> (valor p).</p>
-<p>Entre más pequeño es valor p, más contradictorios son los datos a <span class="math inline">\(H_0\)</span>.</p>
-<p>En este caso, con cualquier nivel de significancia (<span class="math inline">\(\alpha\)</span>) mayor a <span class="math inline">\(0.0389\)</span>, se rechaza la hipótesis nula.</p>
-<p>De aquí se deriva una definición alternativa para el valor p (o nivel de significación observado): “es el nivel de significancia más pequeño al cual <span class="math inline">\(H_0\)</span> sería rechazada”.</p>
+</section>
+<section id="árbol-de-decisión" class="level2">
+<h2 class="anchored" data-anchor-id="árbol-de-decisión">Árbol de decisión</h2>
+<div class="cell">
+<details open="">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tree Model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tree_model <span class="ot">&lt;-</span> <span class="fu">rpart</span>(survive <span class="sc">~</span> class <span class="sc">+</span> sex, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> titanic,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"class"</span>,  <span class="co"># Classification</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">minsplit =</span> <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">prp</span>(tree_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="decision-trees_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="construcción-manual" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-manual">Construcción manual</h2>
+<section id="variable-como-nodo-principal" class="level3">
+<h3 class="anchored" data-anchor-id="variable-como-nodo-principal">Variable como nodo principal</h3>
+<p>Para decidir cuál de las variables debe ser la raíz (root) del árbol, se calcula la métrica Gini Impurity y se selecciona la variable con el menor valor.</p>
+<p>Para la variable <strong>sex</strong>:</p>
+<p><img src="gini-sex.png" class="img-fluid"></p>
+<p>Para la variable <strong>class</strong>:</p>
+<p><img src="gini-class.png" class="img-fluid"></p>
+<p>Note que <span class="math inline">\(\text{Gini(sex) = 0.267 &lt; Gini(class) = 0.4}\)</span>, por lo que la raíz del árbol será la variable <span class="math inline">\(\text{sex}\)</span>.</p>
+</section>
+<section id="siguiente-rama" class="level3">
+<h3 class="anchored" data-anchor-id="siguiente-rama">Siguiente rama</h3>
+<p>Note que cuando sex = men es falso, es decir, cuando se trata de una mujer, todos los casos conducen a que sobrevive, en otras palabras, tanto mujeres de primera como de segunda clase se salvan.</p>
+<p><img src="tree-part-1.png" class="img-fluid"></p>
+<p>Ahora, cuando se trata de hombres, algunos sobreviven y otros no por lo que se sigue explorando con la variable clase:</p>
+<p><img src="tree-part-2.png" class="img-fluid"></p>
+<p>Así, se obtiene el siguiente árbol, que coincide con el obtenido por la función <code>rpart</code></p>
+<p><img src="final-tree.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="gini-impurity-intuitivamente" class="level2">
+<h2 class="anchored" data-anchor-id="gini-impurity-intuitivamente">Gini Impurity (intuitivamente)</h2>
+<p><img src="GiniImpurity.png" class="img-fluid"></p>
 
 
 </section>
@@ -459,14 +508,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Inicio</span></span>
+      <a href="../06-logistic-regression/logistic-regression.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Logística</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../02-r-squared/r-squared.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

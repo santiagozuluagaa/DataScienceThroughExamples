@@ -19,5 +19,11 @@
   },
   "03-bayes-theorem/bayes-theorem.qmd": {
     "bayes-theorem.html": "cc4c16a2"
+  },
+  "06-logistic-regression/logistic-regression.qmd": {
+    "logistic-regression.html": "8bc62677"
+  },
+  "07-decision-trees/decision-trees.qmd": {
+    "decision-trees.html": "9448cb92"
   }
 }

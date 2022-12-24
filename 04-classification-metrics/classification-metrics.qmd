@@ -21,7 +21,7 @@ $$ \text{Sensitivity}
 
 Cuando se habla de "identificado con la enfermedad", esto supone que el modelo ha predicho que tiene la enfermedad.
 
-La sensitividad establece  **qué % de los pacientes con la enfermedad son correctamente clasificados**. En un test médico como el de covid, una alta sensitividad implica que si el paciente tiene covid, el test tiene alta capacidad de detectarlo.
+La sensitividad establece **qué % de los pacientes con la enfermedad son correctamente clasificados**. En un test médico como el de covid, una alta sensitividad implica que si el paciente tiene covid, el test tiene alta capacidad de detectarlo.
 
 Es la respuesta a la siguiente pregunta:
 
@@ -31,10 +31,10 @@ Es la respuesta a la siguiente pregunta:
 
 $$\text{Specificity} = \dfrac{\text{True Negatives}}
                               {\text{True Negatives + False Positives}}$$
-                              
+
 $$\text{Specificity}= p(\text{Identificado sin la enfermedad | No tiene la enfermedad, ie, sano} )$$
 
-La especificidad establece el **qué % de los pacientes sanos son correctamente clasificados**. En un test médico como el de covid, una alta especificidad implica que si el paciente NO tiene covid, el test tiene una alta capacidad de producir un resultado NEGATIVO. 
+La especificidad establece el **qué % de los pacientes sanos son correctamente clasificados**. En un test médico como el de covid, una alta especificidad implica que si el paciente NO tiene covid, el test tiene una alta capacidad de producir un resultado NEGATIVO.
 
 Es la respuesta a la siguiente pregunta:
 
@@ -46,14 +46,14 @@ $$ \text{Error rate} = \dfrac{\text{False Positives + False Negatives}}{{n}}$$
 
 La tasa de error es el % de pacientes que son clasificados incorrectamente.
 
-### Accuracy 
+### Accuracy
 
 $$ \text{Accuracy} = \dfrac{\text{True Positives + True Negatives}}
-                           {n}$$ 
-                           
+                           {n}$$
+
 Es el % de pacientes que son clasificados correctamente.
-                           
-### Precision 
+
+### Precision
 
 $$ \text{Precision} = \dfrac{\text{True Positives}}{\text{True Positives + False Positives}}$$
 
@@ -61,21 +61,16 @@ De los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado
 
 ## Resumen
 
-
-| **Métrica** |              **Otros nombres**             |             **Fórmula**             | **Descripción**                                                                               |
-|:-----------:|:------------------------------------------:|:-----------------------------------:|-----------------------------------------------------------------------------------------------|
-|  Error rate |              ES: Tasa de error             |          $\dfrac{FP+FN}{n}$         | % de pacientes que son clasificados incorrectamente                                           |
-|   Accuracy  |                ES: Precisión               |          $\dfrac{TP+TN}{n}$         | % de pacientes que son clasificados correctamente                                             |
-|  Sensivity  | ES: Sensitividad Recall True Positive Rate | $\dfrac{TP}{TP+FN} = \dfrac{TP}{P}$ | % de pacientes con la enfermedad que son clasificados correctamente                           |
-| Specificity |    ES: Especificidad True Negative Rate    | $\dfrac{TN}{FP+TN} = \dfrac{TN}{N}$ | % de pacientes sin la enfermedad (sanos) que son clasificados correctamente                   |
+| **Métrica** |             **Otros nombres**              |             **Fórmula**             | **Descripción**                                                                               |
+|:------------:|:------------:|:------------:|-------------------------------|
+| Error rate  |             ES: Tasa de error              |         $\dfrac{FP+FN}{n}$          | \% de pacientes que son clasificados incorrectamente                                          |
+|  Accuracy   |               ES: Precisión                |         $\dfrac{TP+TN}{n}$          | \% de pacientes que son clasificados correctamente                                            |
+|  Sensivity  | ES: Sensitividad Recall True Positive Rate | $\dfrac{TP}{TP+FN} = \dfrac{TP}{P}$ | \% de pacientes con la enfermedad que son clasificados correctamente                          |
+| Specificity |    ES: Especificidad True Negative Rate    | $\dfrac{TN}{FP+TN} = \dfrac{TN}{N}$ | \% de pacientes sin la enfermedad (sanos) que son clasificados correctamente                  |
 |  Precision  |          Positive Predicted Value          |         $\dfrac{TP}{TP+FP}$         | De los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado correctamente? |
 
-|           **Descripción**           |      **Definición**     |
+|           **Descripción**           |     **Definición**      |
 |:-----------------------------------:|:-----------------------:|
-| Total de pacientes                  | $n = TP + FP + FN + TN$ |
-| Pacientes con la enfermedad         | $P = TP + FN$           |
-| Pacientes sin la enfermadad (sanos) | $N = FP + TN$           |
-
-
-                              
-
+|         Total de pacientes          | $n = TP + FP + FN + TN$ |
+|     Pacientes con la enfermedad     |      $P = TP + FN$      |
+| Pacientes sin la enfermadad (sanos) |      $N = FP + TN$      |

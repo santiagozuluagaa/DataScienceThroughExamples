@@ -1,0 +1,92 @@
+---
+title: "Decision Trees"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+## Librerías
+
+```{r}
+#| code-fold: show
+#| message: false
+#| warning: false
+
+library(rpart)
+library(rpart.plot)
+library(knitr)
+options(scipen = 999)
+```
+
+## Ejemplo
+
+Se tienen datos sobre 10 pasajeros del titanic, se conoce:
+
+* survive: Sobrevivió al hundimiento o no.
+* class: Primera o segunda clase.
+* sex: Hombre o mujer.
+
+```{r}
+# Read data
+titanic <- read.csv("titanic.csv", sep = ";")
+
+kable(titanic)
+```
+
+## Árbol de decisión
+
+
+
+```{r}
+#| code-fold: show
+
+# Tree Model
+tree_model <- rpart(survive ~ class + sex, 
+                    data = titanic,
+                    method = "class",  # Classification
+                    minsplit = 1)
+
+# Visualize
+prp(tree_model)
+```
+
+## Construcción manual
+
+### Variable como nodo principal
+
+Para decidir cuál de las variables debe ser la raíz (root) del árbol, se calcula la métrica Gini Impurity y se selecciona la variable con el menor valor.
+
+Para la variable **sex**:
+
+![](gini-sex.png)
+
+Para la variable **class**:
+
+![](gini-class.png)
+
+Note que $\text{Gini(sex) = 0.267 < Gini(class) = 0.4}$, por lo que la raíz del árbol será la variable $\text{sex}$.
+
+### Siguiente rama
+
+Note que cuando sex = men es falso, es decir, cuando se trata de una mujer, todos los casos conducen a que sobrevive, en otras palabras, tanto mujeres de primera como de segunda clase se salvan. 
+
+![](tree-part-1.png)
+
+Ahora, cuando se trata de hombres, algunos sobreviven y otros no por lo que se sigue explorando con la variable clase:
+
+![](tree-part-2.png)
+
+Así, se obtiene el siguiente árbol, que coincide con el obtenido por la función `rpart`
+
+![](final-tree.png)
+
+## Gini Impurity (intuitivamente)
+
+![](GiniImpurity)
+
+
+
+
+
