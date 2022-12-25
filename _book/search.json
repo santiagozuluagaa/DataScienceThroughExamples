@@ -222,5 +222,26 @@
     "title": "Decision Trees",
     "section": "Gini Impurity (intuitivamente)",
     "text": "Gini Impurity (intuitivamente)"
+  },
+  {
+    "objectID": "09-k-means/k-means.html#librerías",
+    "href": "09-k-means/k-means.html#librerías",
+    "title": "k-means",
+    "section": "Librerías",
+    "text": "Librerías\n\n\nShow the code\nlibrary(ggplot2)\nlibrary(dplyr)\nlibrary(factoextra)\noptions(scipen = 999)"
+  },
+  {
+    "objectID": "09-k-means/k-means.html#ejemplo",
+    "href": "09-k-means/k-means.html#ejemplo",
+    "title": "k-means",
+    "section": "Ejemplo",
+    "text": "Ejemplo\n\n\nShow the code\ndatos <- data.frame(\n      x = c(\n           2, 3, 3.5, 5,\n           10, 11, 11.8, 13,\n           20, 22, 23, 23.5\n           )\n                  )\n\nggplot(datos, aes(x = x, y = 1, label = x)) +\n  geom_point(size = 2) +\n  geom_text(size = 3, nudge_y = 0.05) +\n  ylim(c(0.5, 1.5)) +\n  theme(axis.title.y = element_blank(),\n        axis.text.y = element_blank(),\n        axis.ticks.y = element_blank())"
+  },
+  {
+    "objectID": "09-k-means/k-means.html#k-means",
+    "href": "09-k-means/k-means.html#k-means",
+    "title": "k-means",
+    "section": "k-means",
+    "text": "k-means\nPara este ejemplo, se seleccionara \\(k = 3\\).\n\nConstrucción manual\n\n\n\n\n\nObtención en R\n\n\nShow the code\nset.seed(123)\nkm.res <- kmeans(datos, \n                 centers = 3,  # Total de medias (centroides)\n                 nstart = 10   # Total de comienzos diferentes\n                 )\n\ndatos2 <- datos\ndatos2$cluster <- factor(km.res$cluster)\n\nggplot(datos2, aes(x = x, y = 1, label = x, color = cluster)) +\n  geom_point(size = 2) +\n  geom_text(size = 3, nudge_y = 0.05) +\n  ylim(c(0.5, 1.5)) +\n  theme(axis.title.y = element_blank(),\n        axis.text.y = element_blank(),\n        axis.ticks.y = element_blank())\n\n\n\n\n\n\n\nNúmero óptimo para (k)\nVisualmente sabíamos que \\(k = 3\\), veamoslo mediante R:\n\n\nShow the code\n# \"silhouette\" (for average silhouette width), \n# \"wss\" (for total within sum of square) \n# \"gap_stat\" (for gap statistics)\nfviz_nbclust(datos, \n             kmeans, \n             method = \"wss\")  +\n  geom_vline(xintercept = 3, linetype = 2) +\n  labs(subtitle = \"Elbow method\")\n\n\n\n\n\nCada que se añade un nuevo clúster, se reduce la variación total (que es la suma de cuadrados dentro de cada clúster). Cuando cada cluster es un solo puntos, se tendrá que la variación es cero.\nSin embargo, observe que cuando se pasa de \\(k= 3\\) a \\(k = 4\\) o sucesivamente, la reducción varianza es mínima, por lo que se elige \\(k=3\\), como se había notado visualmente.\n\n\nAuxiliar Beta (No se necesita)\nSeleccionar 3 puntos aleatoriamente y calcular distancia:\n\n\nShow the code\n#|echo: false\n# set.seed(5)\n# points_selected <- sample(c(1:12), 3)\n# \n# datos2 <- datos %>% mutate(selected = if_else(row_number() %in% points_selected, 1, 0),\n#                            cluster = if_else(selected == 1, row_number(), NA_integer_)\n#                            )\n# \n# for (point in datos2$x){\n#   temp_df <- data.frame(cluster=integer(), distancia=double())\n#   for (point2 in datos2$x)\n#   {\n#     pos_point2 <- which(datos2$x == point2) # Posición del punto\n#     if (!is.na(datos2$cluster[pos_point2])) {\n#       new_distance <- data.frame(cluster = datos2$cluster[pos_point2], \n#                                  distance = abs(point - point2))\n#       temp_df <- rbind(temp_df, new_distance)\n#     }\n#   }\n#   datos2$cluster_final[which(datos2$x == point)] <- temp_df$cluster[which(temp_df$distance == min(temp_df$distance))]\n# }\n# \n# for (point in datos2$x){\n#   if(!is.na(datos2$cluster[which(datos2$x == point)])){\n#     cluster <- datos2$cluster[which(datos2$x == point)]\n#     datos2$mean_value[which(datos2$x == point)] <- mean(datos2$x[datos2$cluster_final == cluster])\n#   }\n# }\n# \n# datos2 <- datos2 %>% mutate(dist = abs(mean_value - x))\n# \n# datos2$cluster_final <- factor(datos2$cluster_final)\n# \n# ggplot(datos2, aes(x = x, y = 1, label = x,color = cluster_final)) +\n#   geom_point(size = 2) +\n#   geom_text(size = 3, nudge_y = 0.05) +\n#   ylim(c(0.5, 1.5)) +\n#   theme(axis.title.y = element_blank(),\n#         axis.text.y = element_blank(),\n#         axis.ticks.y = element_blank(),\n#         legend.position = \"none\")"
   }
 ]

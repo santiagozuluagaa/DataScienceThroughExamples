@@ -25,5 +25,8 @@
   },
   "07-decision-trees/decision-trees.qmd": {
     "decision-trees.html": "9448cb92"
+  },
+  "09-k-means/k-means.qmd": {
+    "k-means.html": "78991038"
   }
 }
