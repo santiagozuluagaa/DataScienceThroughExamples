@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science Through Examples - Teorema de Bayes</title>
+<title>Data Science Through Examples - Clasificación (métricas)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../04-classification-metrics/classification-metrics.html" rel="next">
-<link href="../02-r-squared/r-squared.html" rel="prev">
+<link href="../06-logistic-regression/logistic-regression.html" rel="next">
+<link href="../03-bayes-theorem/bayes-theorem.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -71,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Teorema de Bayes</h1>
+      <h1 class="quarto-secondary-nav-title">Clasificación (métricas)</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -111,12 +111,27 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../03-bayes-theorem/bayes-theorem.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></a>
+  <a href="../03-bayes-theorem/bayes-theorem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../04-classification-metrics/classification-metrics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clasificación (métricas)</span></a>
+  <a href="../04-classification-metrics/classification-metrics.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clasificación (métricas)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../06-logistic-regression/logistic-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Logística</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Decision Trees</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../09-k-means/k-means.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">k-means</span></a>
   </div>
 </li>
     </ul>
@@ -128,15 +143,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#ejemplo" id="toc-ejemplo" class="nav-link active" data-scroll-target="#ejemplo">Ejemplo</a></li>
-  <li><a href="#representación-visual" id="toc-representación-visual" class="nav-link" data-scroll-target="#representación-visual">Representación visual</a></li>
-  <li><a href="#probabilidad-condicional" id="toc-probabilidad-condicional" class="nav-link" data-scroll-target="#probabilidad-condicional">Probabilidad condicional</a></li>
-  <li><a href="#derivación-visual" id="toc-derivación-visual" class="nav-link" data-scroll-target="#derivación-visual">Derivación visual</a></li>
-  <li><a href="#actualización-de-probabilidad" id="toc-actualización-de-probabilidad" class="nav-link" data-scroll-target="#actualización-de-probabilidad">Actualización de probabilidad</a>
+  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link active" data-scroll-target="#matriz-de-confusión">Matriz de confusión</a>
   <ul class="collapse">
-  <li><a href="#ejemplo-adicional" id="toc-ejemplo-adicional" class="nav-link" data-scroll-target="#ejemplo-adicional">Ejemplo adicional</a></li>
+  <li><a href="#sensitivity-sensitividad" id="toc-sensitivity-sensitividad" class="nav-link" data-scroll-target="#sensitivity-sensitividad">Sensitivity (sensitividad)</a></li>
+  <li><a href="#specificity-especificidad" id="toc-specificity-especificidad" class="nav-link" data-scroll-target="#specificity-especificidad">Specificity (especificidad)</a></li>
+  <li><a href="#error-rate-tasa-de-error" id="toc-error-rate-tasa-de-error" class="nav-link" data-scroll-target="#error-rate-tasa-de-error">Error rate (Tasa de error)</a></li>
+  <li><a href="#accuracy" id="toc-accuracy" class="nav-link" data-scroll-target="#accuracy">Accuracy</a></li>
+  <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision">Precision</a></li>
   </ul></li>
-  <li><a href="#consideraciones-conceptuales" id="toc-consideraciones-conceptuales" class="nav-link" data-scroll-target="#consideraciones-conceptuales">Consideraciones conceptuales</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen">Resumen</a></li>
   </ul>
 </nav>
     </div>
@@ -145,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Teorema de Bayes</h1>
+<h1 class="title d-none d-lg-block">Clasificación (métricas)</h1>
 </div>
 
 
@@ -160,80 +175,123 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="ejemplo" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo">Ejemplo</h2>
-<p>Considere los siguientes eventos, en relación a la detección de correos electrónicos que son spam.</p>
-<ul>
-<li>Contener la palabra ‘oferta’.</li>
-<li>Ser SPAM.</li>
-</ul>
-<p>Se muestra la tabla de contigencia para 200 correos en relación a estos eventos:</p>
-<p><img src="bayes-theorem-contigency-table.png" class="img-fluid"></p>
+<section id="matriz-de-confusión" class="level2">
+<h2 class="anchored" data-anchor-id="matriz-de-confusión">Matriz de confusión</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classification-metrics.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Matriz de confusión</figcaption><p></p>
+</figure>
+</div>
+<section id="sensitivity-sensitividad" class="level3">
+<h3 class="anchored" data-anchor-id="sensitivity-sensitividad">Sensitivity (sensitividad)</h3>
+<p><span class="math display">\[ \text{Sensitivity} = \dfrac{\text{True Positives}}
+                              {\text{True Positives + False Negatives}}  \]</span></p>
+<p><span class="math display">\[ \text{Sensitivity}
+                      = p(\text{Identificado con la enfermedad | Tiene la enfermedad }) \]</span></p>
+<p>Cuando se habla de “identificado con la enfermedad”, esto supone que el modelo ha predicho que tiene la enfermedad.</p>
+<p>La sensitividad establece <strong>qué % de los pacientes con la enfermedad son correctamente clasificados</strong>. En un test médico como el de covid, una alta sensitividad implica que si el paciente tiene covid, el test tiene alta capacidad de detectarlo.</p>
+<p>Es la respuesta a la siguiente pregunta:</p>
+<p><strong>Si un paciente tiene la enfermedad, ¿cuál es la probabilidad de que sea detectada?</strong></p>
 </section>
-<section id="representación-visual" class="level2">
-<h2 class="anchored" data-anchor-id="representación-visual">Representación visual</h2>
-<p>Visualmente, se puede representar como:</p>
-<p><img src="bayes-theorem01.png" class="img-fluid"></p>
-<ul>
-<li>Cada cuadro representa un correo, en caso de contener la abreviación ‘Of’, esto indica que el correo es Spam.</li>
-</ul>
+<section id="specificity-especificidad" class="level3">
+<h3 class="anchored" data-anchor-id="specificity-especificidad">Specificity (especificidad)</h3>
+<p><span class="math display">\[\text{Specificity} = \dfrac{\text{True Negatives}}
+                              {\text{True Negatives + False Positives}}\]</span></p>
+<p><span class="math display">\[\text{Specificity}= p(\text{Identificado sin la enfermedad | No tiene la enfermedad, ie, sano} )\]</span></p>
+<p>La especificidad establece el <strong>qué % de los pacientes sanos son correctamente clasificados</strong>. En un test médico como el de covid, una alta especificidad implica que si el paciente NO tiene covid, el test tiene una alta capacidad de producir un resultado NEGATIVO.</p>
+<p>Es la respuesta a la siguiente pregunta:</p>
+<p><strong>Si un paciente está sano, ¿cuál es la probabilidad de que el resultado de la prueba sea NEGATIVO?</strong></p>
 </section>
-<section id="probabilidad-condicional" class="level2">
-<h2 class="anchored" data-anchor-id="probabilidad-condicional">Probabilidad condicional</h2>
-<p>La pregunta natural que surge es la siguiente:</p>
-<p>¿cuál es la probabilidad de que un correo sea spam si contiene la palabra ‘oferta’?</p>
-<p>A partir de esta probabilidad, se podrá decidir si el correo se envía a la bandeja de Spam o no.</p>
-<p>Usando el Teorema de Bayes, se obtiene:</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) =
-    \dfrac{P (\text{Contiene la palabra oferta | Spam}) \cdot P(\text{Spam})}
-          {P (\text{Contiene la palabra oferta})}\]</span></p>
+<section id="error-rate-tasa-de-error" class="level3">
+<h3 class="anchored" data-anchor-id="error-rate-tasa-de-error">Error rate (Tasa de error)</h3>
+<p><span class="math display">\[ \text{Error rate} = \dfrac{\text{False Positives + False Negatives}}{{n}}\]</span></p>
+<p>La tasa de error es el % de pacientes que son clasificados incorrectamente.</p>
 </section>
-<section id="derivación-visual" class="level2">
-<h2 class="anchored" data-anchor-id="derivación-visual">Derivación visual</h2>
-<p>Supongamos que la representación visual es un rectángulo de área 1 representando probabilidad.</p>
-<p>Tenemos que:</p>
-<p><img src="bayes-explanation-1.png" class="img-fluid"></p>
-<p>Dado que:</p>
-<p><span class="math display">\[ P(\text{Spam} \cap \text{Contiene la palabra oferta}) =
-    P(\text{Contiene la palabra oferta|Spam}) \cdot P(\text{Spam}) \]</span></p>
-<p><span class="math display">\[ P(\text{NO Spam} \cap \text{Contiene la palabra oferta}) =
-    P(\text{Contiene la palabra oferta|NO Spam}) \cdot P(\text{NO Spam}) \]</span></p>
-<p>Se reemplaza y se obtiene:</p>
-<p><img src="bayes-explanation-2.png" class="img-fluid"></p>
-<p>El resultado final es:</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) =
-    \dfrac{P (\text{Contiene la palabra oferta | Spam}) \cdot P(\text{Spam})}
-          {P (\text{Contiene la palabra oferta})}\]</span></p>
-<p>Este resultado coincide con lo ya antes mostrado por el Teorema de Bayes.</p>
+<section id="accuracy" class="level3">
+<h3 class="anchored" data-anchor-id="accuracy">Accuracy</h3>
+<p><span class="math display">\[ \text{Accuracy} = \dfrac{\text{True Positives + True Negatives}}
+                           {n}\]</span></p>
+<p>Es el % de pacientes que son clasificados correctamente.</p>
 </section>
-<section id="actualización-de-probabilidad" class="level2">
-<h2 class="anchored" data-anchor-id="actualización-de-probabilidad">Actualización de probabilidad</h2>
-<p>De la derivación visual, se tiene que:</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) = \dfrac{16}{16+32} = \dfrac{16}{48} = \dfrac{1}{3}\]</span></p>
-<p>Usando el teorema de Bayes:</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) =
-    \dfrac{P (\text{Contiene la palabra oferta | Spam}) }
-          {P (\text{Contiene la palabra oferta})} \cdot P(\text{Spam})\]</span></p>
-<p>Esto se puede ver de la siguiente forma, <span class="math inline">\(P(\text{Spam | Contiene la palabra oferta})\)</span> es una escalación de <span class="math inline">\(P(\text{Spam})\)</span> por el factor <span class="math inline">\(\dfrac{P(\text{Contiene la palabra oferta | Spam}) }{P (\text{Contiene la palabra oferta})}\)</span></p>
-<p>Para este ejemplo:</p>
-<p><span class="math display">\[\dfrac{P(\text{Contiene la palabra oferta | Spam}) }{P (\text{Contiene la palabra oferta})} = \dfrac{16/40}{48/200} = 1.6667\]</span> Así:</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) = 1.6667 \cdot P(\text{Spam})\]</span></p>
-<p>Es decir, la probabilidad de que sea Spam de aquellos correos con la palabra oferta es 1.6667 veces que la probabilidad (general) de que sea Spam.</p>
-<p><span class="math display">\[ P (\text{Spam | Contiene la palabra oferta}) = 1.6667 \cdot \dfrac{40}{200} = \dfrac{1}{3}\]</span></p>
-<section id="ejemplo-adicional" class="level3">
-<h3 class="anchored" data-anchor-id="ejemplo-adicional">Ejemplo adicional</h3>
-<p>Considere el siguiente enunciado: “Cuando un equipo anota el primer gol, las probabilidades de victoria suben un 20%”, esto se traduce en:</p>
-<p><span class="math display">\[ P(\text{Ganar}|\text{Anotar primer gol})= 1.20 \times P(\text{Ganar})\]</span> Por lo que:</p>
-<p><span class="math display">\[ \dfrac{P(\text{Anotar primer gol|Ganar})}{P(\text{Anotar primer gol})} = 1.20\]</span></p>
+<section id="precision" class="level3">
+<h3 class="anchored" data-anchor-id="precision">Precision</h3>
+<p><span class="math display">\[ \text{Precision} = \dfrac{\text{True Positives}}{\text{True Positives + False Positives}}\]</span></p>
+<p>De los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado correctamente?</p>
 </section>
 </section>
-<section id="consideraciones-conceptuales" class="level2">
-<h2 class="anchored" data-anchor-id="consideraciones-conceptuales">Consideraciones conceptuales</h2>
-<ul>
-<li><p>Si A y B son independientes: <span class="math inline">\(P(A \cap B)=P(A) \cdot P(B)\)</span></p></li>
-<li><p>Si A y B no son independientes: <span class="math inline">\(P(A \cap B) = P(B|A) \cdot P(A)\)</span></p></li>
-<li><p><span class="math inline">\(P(B|A)= \underbrace{P(B \cap A|A)}_{\text{A ya se dio}}\neq \underbrace{P(B \cap A)}_{\text{A NO se ha dado}}\)</span></p></li>
-</ul>
+<section id="resumen" class="level2">
+<h2 class="anchored" data-anchor-id="resumen">Resumen</h2>
+<table class="table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Métrica</strong></th>
+<th style="text-align: center;"><strong>Otros nombres</strong></th>
+<th style="text-align: center;"><strong>Fórmula</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Error rate</td>
+<td style="text-align: center;">ES: Tasa de error</td>
+<td style="text-align: center;"><span class="math inline">\(\dfrac{FP+FN}{n}\)</span></td>
+<td>% de pacientes que son clasificados incorrectamente</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Accuracy</td>
+<td style="text-align: center;">ES: Precisión</td>
+<td style="text-align: center;"><span class="math inline">\(\dfrac{TP+TN}{n}\)</span></td>
+<td>% de pacientes que son clasificados correctamente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Sensivity</td>
+<td style="text-align: center;">ES: Sensitividad Recall True Positive Rate</td>
+<td style="text-align: center;"><span class="math inline">\(\dfrac{TP}{TP+FN} = \dfrac{TP}{P}\)</span></td>
+<td>% de pacientes con la enfermedad que son clasificados correctamente</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Specificity</td>
+<td style="text-align: center;">ES: Especificidad True Negative Rate</td>
+<td style="text-align: center;"><span class="math inline">\(\dfrac{TN}{FP+TN} = \dfrac{TN}{N}\)</span></td>
+<td>% de pacientes sin la enfermedad (sanos) que son clasificados correctamente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Precision</td>
+<td style="text-align: center;">Positive Predicted Value</td>
+<td style="text-align: center;"><span class="math inline">\(\dfrac{TP}{TP+FP}\)</span></td>
+<td>De los pacientes que fueron clasificados como enfermos, ¿qué % fue clasificado correctamente?</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Descripción</strong></th>
+<th style="text-align: center;"><strong>Definición</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Total de pacientes</td>
+<td style="text-align: center;"><span class="math inline">\(n = TP + FP + FN + TN\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Pacientes con la enfermedad</td>
+<td style="text-align: center;"><span class="math inline">\(P = TP + FN\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Pacientes sin la enfermadad (sanos)</td>
+<td style="text-align: center;"><span class="math inline">\(N = FP + TN\)</span></td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
@@ -374,13 +432,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../02-r-squared/r-squared.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></span>
+      <a href="../03-bayes-theorem/bayes-theorem.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../04-classification-metrics/classification-metrics.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clasificación (métricas)</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../06-logistic-regression/logistic-regression.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Logística</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

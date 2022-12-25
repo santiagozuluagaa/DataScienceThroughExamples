@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science Through Examples - R Cuadrado</title>
+<title>Data Science Through Examples - Decision Trees</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../03-bayes-theorem/bayes-theorem.html" rel="next">
-<link href="../01-p-values/p-values.html" rel="prev">
+<link href="../09-k-means/k-means.html" rel="next">
+<link href="../06-logistic-regression/logistic-regression.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -134,7 +134,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">R Cuadrado</h1>
+      <h1 class="quarto-secondary-nav-title">Decision Trees</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -169,7 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../02-r-squared/r-squared.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></a>
+  <a href="../02-r-squared/r-squared.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -189,7 +189,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></a>
+  <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Decision Trees</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../09-k-means/k-means.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">k-means</span></a>
   </div>
 </li>
     </ul>
@@ -202,12 +207,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#librerías" id="toc-librerías" class="nav-link active" data-scroll-target="#librerías">Librerías</a></li>
-  <li><a href="#ejemplo-1" id="toc-ejemplo-1" class="nav-link" data-scroll-target="#ejemplo-1">Ejemplo 1</a>
+  <li><a href="#ejemplo" id="toc-ejemplo" class="nav-link" data-scroll-target="#ejemplo">Ejemplo</a></li>
+  <li><a href="#árbol-de-decisión" id="toc-árbol-de-decisión" class="nav-link" data-scroll-target="#árbol-de-decisión">Árbol de decisión</a></li>
+  <li><a href="#construcción-manual" id="toc-construcción-manual" class="nav-link" data-scroll-target="#construcción-manual">Construcción manual</a>
   <ul class="collapse">
-  <li><a href="#total-sum-of-squares" id="toc-total-sum-of-squares" class="nav-link" data-scroll-target="#total-sum-of-squares">Total Sum of Squares</a></li>
-  <li><a href="#sum-of-squares-of-residuals." id="toc-sum-of-squares-of-residuals." class="nav-link" data-scroll-target="#sum-of-squares-of-residuals.">Sum of Squares of Residuals.</a></li>
+  <li><a href="#variable-como-nodo-principal" id="toc-variable-como-nodo-principal" class="nav-link" data-scroll-target="#variable-como-nodo-principal">Variable como nodo principal</a></li>
+  <li><a href="#siguiente-rama" id="toc-siguiente-rama" class="nav-link" data-scroll-target="#siguiente-rama">Siguiente rama</a></li>
   </ul></li>
-  <li><a href="#r-cuadrado-cálculo" id="toc-r-cuadrado-cálculo" class="nav-link" data-scroll-target="#r-cuadrado-cálculo">R cuadrado cálculo</a></li>
+  <li><a href="#gini-impurity-intuitivamente" id="toc-gini-impurity-intuitivamente" class="nav-link" data-scroll-target="#gini-impurity-intuitivamente">Gini Impurity (intuitivamente)</a></li>
   </ul>
 </nav>
     </div>
@@ -216,7 +223,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">R Cuadrado</h1>
+<h1 class="title d-none d-lg-block">Decision Trees</h1>
 </div>
 
 
@@ -236,114 +243,137 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details open="">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="ejemplo-1" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo-1">Ejemplo 1</h2>
-<p>Se trata de explicar el precio de una casa (en miles de dólares) usando su tamaño (m2).</p>
+<section id="ejemplo" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo">Ejemplo</h2>
+<p>Se tienen datos sobre 10 pasajeros del titanic, se conoce:</p>
+<ul>
+<li>survive: Sobrevivió al hundimiento o no.</li>
+<li>class: Primera o segunda clase.</li>
+<li>sex: Hombre o mujer.</li>
+</ul>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>casas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">price =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">85</span>, <span class="dv">67</span>, <span class="dv">200</span>, <span class="dv">110</span>, <span class="dv">154</span>), </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">140</span>, <span class="dv">92</span>, <span class="dv">70</span>, <span class="dv">150</span>, <span class="dv">100</span>, <span class="dv">120</span>))</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"titanic.csv"</span>, <span class="at">sep =</span> <span class="st">";"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mean_price <span class="ot">&lt;-</span> <span class="fu">mean</span>(casas<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<section id="total-sum-of-squares" class="level3">
-<h3 class="anchored" data-anchor-id="total-sum-of-squares">Total Sum of Squares</h3>
-<div class="cell">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataframe for the segments of error</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>casas_segments_mean <span class="ot">&lt;-</span> casas <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">x =</span> size,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">xend =</span> size,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">y =</span> price,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">yend =</span> mean_price)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(casas) <span class="sc">+</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> size, <span class="at">y =</span> price), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mean_price, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data =</span> casas_segments_mean, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend), </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"blue"</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">size =</span> <span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="r-squared_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">class</th>
+<th style="text-align: left;">sex</th>
+<th style="text-align: left;">survive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">first</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">woman</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">second</td>
+<td style="text-align: left;">man</td>
+<td style="text-align: left;">no</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
-<section id="sum-of-squares-of-residuals." class="level3">
-<h3 class="anchored" data-anchor-id="sum-of-squares-of-residuals.">Sum of Squares of Residuals.</h3>
-<div class="cell">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|message: false</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#|warning: false</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>lin_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(price <span class="sc">~</span> size, <span class="at">data =</span> casas)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>casas<span class="sc">$</span>predicted_price <span class="ot">&lt;-</span> lin_mod<span class="sc">$</span>fitted.values</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(casas, <span class="fu">aes</span>(<span class="at">x =</span> size, <span class="at">y =</span> price)) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> size, <span class="at">yend =</span> predicted_price), <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="r-squared_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-</section>
-<section id="r-cuadrado-cálculo" class="level2">
-<h2 class="anchored" data-anchor-id="r-cuadrado-cálculo">R cuadrado cálculo</h2>
+<section id="árbol-de-decisión" class="level2">
+<h2 class="anchored" data-anchor-id="árbol-de-decisión">Árbol de decisión</h2>
 <div class="cell">
 <details open="">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Total Sum of Squares. SUM of (y_i - y_mean)^2</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((casas<span class="sc">$</span>price <span class="sc">-</span> mean_price)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum of Squares of Residuals. SUM of (y_i - y_hat)^2</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>RSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((casas<span class="sc">$</span>price <span class="sc">-</span> casas<span class="sc">$</span>predicted_price)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># R^2</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>R_s <span class="ot">&lt;-</span> (TSS <span class="sc">-</span> RSS)<span class="sc">/</span>(TSS)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo obtenido lm</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>R_s_lm <span class="ot">&lt;-</span> <span class="fu">summary</span>(lin_mod)<span class="sc">$</span>r.squared</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(R_s, R_s_lm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tree Model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tree_model <span class="ot">&lt;-</span> <span class="fu">rpart</span>(survive <span class="sc">~</span> class <span class="sc">+</span> sex, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> titanic,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"class"</span>,  <span class="co"># Classification</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">minsplit =</span> <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">prp</span>(tree_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.7544956 0.7544956</code></pre>
+<div class="cell-output-display">
+<p><img src="decision-trees_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Note que <span class="math display">\[ R^2 = \dfrac{TSS-RSS}{TSS} = \dfrac{TSS}{TSS} - \dfrac{RSS}{TSS} \]</span></p>
-<p><span class="math display">\[ R^2 = 1 - \dfrac{RSS}{TSS}\]</span></p>
-<p>Para nuestro ejemplo:</p>
-<p><span class="math display">\[ R^2 = \dfrac{
-                \overbrace{11647}^{\text{VAR a explicar}}     
-                -
-                \overbrace{2859}^{\text{VAR NO explicada por modelo}}
-                }
-                {
-                \underbrace{11647}_{\text{VAR a explicar}}
-                }
-       = \dfrac{
-                \overbrace{11647 - 2859}^{\text{VAR explicada por el modelo}}  
-                }
-                {
-                \underbrace{11647}_{\text{VAR a explicar}}
-                }
-      = 0.7545\]</span></p>
-<p><span class="math inline">\(R^2\)</span> establece el porcentaje de variación en el <strong>precio (variable respuesta)</strong> que es explicado por el modelo, es decir, por el <strong>tamaño (variable explicativa)</strong>. En nuestro ejemplo, el 75.45% de variación en el precio es explicado por el tamaño.</p>
+</section>
+<section id="construcción-manual" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-manual">Construcción manual</h2>
+<section id="variable-como-nodo-principal" class="level3">
+<h3 class="anchored" data-anchor-id="variable-como-nodo-principal">Variable como nodo principal</h3>
+<p>Para decidir cuál de las variables debe ser la raíz (root) del árbol, se calcula la métrica Gini Impurity y se selecciona la variable con el menor valor.</p>
+<p>Para la variable <strong>sex</strong>:</p>
+<p><img src="gini-sex.png" class="img-fluid"></p>
+<p>Para la variable <strong>class</strong>:</p>
+<p><img src="gini-class.png" class="img-fluid"></p>
+<p>Note que <span class="math inline">\(\text{Gini(sex) = 0.267 &lt; Gini(class) = 0.4}\)</span>, por lo que la raíz del árbol será la variable <span class="math inline">\(\text{sex}\)</span>.</p>
+</section>
+<section id="siguiente-rama" class="level3">
+<h3 class="anchored" data-anchor-id="siguiente-rama">Siguiente rama</h3>
+<p>Note que cuando sex = men es falso, es decir, cuando se trata de una mujer, todos los casos conducen a que sobrevive, en otras palabras, tanto mujeres de primera como de segunda clase se salvan.</p>
+<p><img src="tree-part-1.png" class="img-fluid"></p>
+<p>Ahora, cuando se trata de hombres, algunos sobreviven y otros no por lo que se sigue explorando con la variable clase:</p>
+<p><img src="tree-part-2.png" class="img-fluid"></p>
+<p>Así, se obtiene el siguiente árbol, que coincide con el obtenido por la función <code>rpart</code></p>
+<p><img src="final-tree.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="gini-impurity-intuitivamente" class="level2">
+<h2 class="anchored" data-anchor-id="gini-impurity-intuitivamente">Gini Impurity (intuitivamente)</h2>
+<p><img src="GiniImpurity.png" class="img-fluid"></p>
 
 
 </section>
@@ -484,13 +514,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../01-p-values/p-values.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></span>
+      <a href="../06-logistic-regression/logistic-regression.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Logística</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../03-bayes-theorem/bayes-theorem.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../09-k-means/k-means.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">k-means</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

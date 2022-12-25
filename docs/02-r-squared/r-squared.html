@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science Through Examples - Valor p</title>
+<title>Data Science Through Examples - R Cuadrado</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../02-r-squared/r-squared.html" rel="next">
-<link href="../index.html" rel="prev">
+<link href="../03-bayes-theorem/bayes-theorem.html" rel="next">
+<link href="../01-p-values/p-values.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -134,7 +134,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Valor p</h1>
+      <h1 class="quarto-secondary-nav-title">R Cuadrado</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -164,12 +164,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../01-p-values/p-values.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></a>
+  <a href="../01-p-values/p-values.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../02-r-squared/r-squared.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></a>
+  <a href="../02-r-squared/r-squared.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -192,6 +192,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../07-decision-trees/decision-trees.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Decision Trees</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../09-k-means/k-means.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">k-means</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -201,11 +206,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#ejemplo" id="toc-ejemplo" class="nav-link active" data-scroll-target="#ejemplo">Ejemplo</a></li>
-  <li><a href="#definición" id="toc-definición" class="nav-link" data-scroll-target="#definición">Definición</a></li>
-  <li><a href="#hipótesis" id="toc-hipótesis" class="nav-link" data-scroll-target="#hipótesis">Hipótesis</a></li>
-  <li><a href="#estadístico-de-prueba" id="toc-estadístico-de-prueba" class="nav-link" data-scroll-target="#estadístico-de-prueba">Estadístico de Prueba</a></li>
-  <li><a href="#valor-p" id="toc-valor-p" class="nav-link" data-scroll-target="#valor-p">Valor p</a></li>
+  <li><a href="#librerías" id="toc-librerías" class="nav-link active" data-scroll-target="#librerías">Librerías</a></li>
+  <li><a href="#ejemplo-1" id="toc-ejemplo-1" class="nav-link" data-scroll-target="#ejemplo-1">Ejemplo 1</a>
+  <ul class="collapse">
+  <li><a href="#total-sum-of-squares" id="toc-total-sum-of-squares" class="nav-link" data-scroll-target="#total-sum-of-squares">Total Sum of Squares</a></li>
+  <li><a href="#sum-of-squares-of-residuals." id="toc-sum-of-squares-of-residuals." class="nav-link" data-scroll-target="#sum-of-squares-of-residuals.">Sum of Squares of Residuals.</a></li>
+  </ul></li>
+  <li><a href="#r-cuadrado-cálculo" id="toc-r-cuadrado-cálculo" class="nav-link" data-scroll-target="#r-cuadrado-cálculo">R cuadrado cálculo</a></li>
   </ul>
 </nav>
     </div>
@@ -214,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Valor p</h1>
+<h1 class="title d-none d-lg-block">R Cuadrado</h1>
 </div>
 
 
@@ -229,96 +236,119 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<section id="librerías" class="level2">
+<h2 class="anchored" data-anchor-id="librerías">Librerías</h2>
 <div class="cell">
 <details open="">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="ejemplo" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo">Ejemplo</h2>
-<p>Un fabricante de bombillas establece que la duración promedio de sus bombillas es de 10.000 horas. Un auditor externo propone que la duración promedio de las bombillas es en realidad menor de las 10.000 horas.</p>
-<p>Se sabe que la duración promedio de una bombilla se distribuye normalmente con <span class="math inline">\(\sigma^2 = 1000\)</span>.</p>
-<p>El auditor consiguió una muestra aleatoria de 28 bombillas y obtuvo una duración promedio de 9500 horas.</p>
-<p>Realice una prueba de hipótesis de acuerdo a lo planteado por el auditor externo.</p>
 </section>
-<section id="definición" class="level2">
-<h2 class="anchored" data-anchor-id="definición">Definición</h2>
-<p>Sea:</p>
-<ul>
-<li>X = Duración de una bombilla de la población de interés</li>
-</ul>
-</section>
-<section id="hipótesis" class="level2">
-<h2 class="anchored" data-anchor-id="hipótesis">Hipótesis</h2>
-<p><span class="math display">\[ H_0: \mu = 10.000 \ \text{horas}  
-    \ \ \ \ \
-   H_A: \mu &lt; 10.000 \ \text{horas}\]</span></p>
-</section>
-<section id="estadístico-de-prueba" class="level2">
-<h2 class="anchored" data-anchor-id="estadístico-de-prueba">Estadístico de Prueba</h2>
-<p>Para este caso, se tiene que:</p>
-<ul>
-<li><span class="math inline">\(X\)</span> se distribuye normalmente.</li>
-<li><span class="math inline">\(\sigma^2 = 1000\)</span></li>
-<li><span class="math inline">\(n = 28\)</span></li>
-</ul>
-<p>El estadístico de prueba es:</p>
-<p><span class="math display">\[ Z_c =  \dfrac{\overline{X}-\mu_0}{\dfrac{\sigma}{\sqrt{n}}}\]</span></p>
+<section id="ejemplo-1" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-1">Ejemplo 1</h2>
+<p>Se trata de explicar el precio de una casa (en miles de dólares) usando su tamaño (m2).</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Z_c <span class="ot">&lt;-</span> (<span class="dv">9500</span> <span class="sc">-</span> <span class="dv">10000</span>) <span class="sc">/</span> (<span class="dv">1500</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">28</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>casas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">price =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">85</span>, <span class="dv">67</span>, <span class="dv">200</span>, <span class="dv">110</span>, <span class="dv">154</span>), </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">140</span>, <span class="dv">92</span>, <span class="dv">70</span>, <span class="dv">150</span>, <span class="dv">100</span>, <span class="dv">120</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mean_price <span class="ot">&lt;-</span> <span class="fu">mean</span>(casas<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p><span class="math display">\[ Z_c = \dfrac{9500-10000}{\dfrac{1500}{\sqrt{28}}} = -1.7638\]</span></p>
-</section>
-<section id="valor-p" class="level2">
-<h2 class="anchored" data-anchor-id="valor-p">Valor p</h2>
-<p>Es la probabilidad de obtener un valor para el estadístico de prueba que sea igual o más extremo de contradictorio a <span class="math inline">\(H_0\)</span> que el valor obtenido, suponiendo que <span class="math inline">\(H_0\)</span> es verdadera.</p>
-<p><span class="math display">\[ \text{valor p} =  P(Z \leq Z_c) =P(Z &lt; Z_c)  \]</span></p>
-<p>Para este caso:</p>
+<section id="total-sum-of-squares" class="level3">
+<h3 class="anchored" data-anchor-id="total-sum-of-squares">Total Sum of Squares</h3>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(Z_c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p><span class="math display">\[ \text{valor p} = P(Z &lt; Z_c) = 0.0389\]</span></p>
-<div class="cell">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geom =</span> <span class="st">"line"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geom =</span> <span class="st">"area"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"blue"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, Z_c)) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> Z_c, <span class="at">colour=</span><span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"longdash"</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"Z_c"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">2</span>, <span class="at">y =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"Valores igual o </span><span class="sc">\n</span><span class="st"> más extremos de </span><span class="sc">\n</span><span class="st"> contradictorio </span><span class="sc">\n</span><span class="st"> que Z_c a la </span><span class="sc">\n</span><span class="st"> hipótesis nula"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"El área en azul </span><span class="sc">\n</span><span class="st"> representa tal </span><span class="sc">\n</span><span class="st"> probabilidad"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.1</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_segment</span>(</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Z_c, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> <span class="sc">-</span><span class="dv">3</span>, <span class="at">yend =</span> <span class="dv">0</span>), </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"red"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> <span class="fl">1.2</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"mm"</span>))</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Z"</span>, <span class="at">y =</span> <span class="st">"density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataframe for the segments of error</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>casas_segments_mean <span class="ot">&lt;-</span> casas <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">x =</span> size,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">xend =</span> size,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">y =</span> price,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">yend =</span> mean_price)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(casas) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> size, <span class="at">y =</span> price), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mean_price, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data =</span> casas_segments_mean, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend), </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"blue"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">size =</span> <span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="p-values_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="r-squared_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><strong>¿Por qué se rechaza la hipótesis nula para valores bajos de</strong> <span class="math inline">\(H_0\)</span>?</p>
-<p>El valor se calcula suponiendo que la hipótesis nula es verdadera.</p>
-<p>Por ejemplo, para este caso, suponiendo que <span class="math inline">\(\mu = 10000 \ \text{horas}\)</span>, la probabilidad de que <span class="math inline">\(Z_c &lt; -1.7638\)</span> es de <span class="math inline">\(0.0389\)</span> (valor p).</p>
-<p>Entre más pequeño es valor p, más contradictorios son los datos a <span class="math inline">\(H_0\)</span>.</p>
-<p>En este caso, con cualquier nivel de significancia (<span class="math inline">\(\alpha\)</span>) mayor a <span class="math inline">\(0.0389\)</span>, se rechaza la hipótesis nula.</p>
-<p>De aquí se deriva una definición alternativa para el valor p (o nivel de significación observado): “es el nivel de significancia más pequeño al cual <span class="math inline">\(H_0\)</span> sería rechazada”.</p>
+</section>
+<section id="sum-of-squares-of-residuals." class="level3">
+<h3 class="anchored" data-anchor-id="sum-of-squares-of-residuals.">Sum of Squares of Residuals.</h3>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|message: false</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#|warning: false</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>lin_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(price <span class="sc">~</span> size, <span class="at">data =</span> casas)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>casas<span class="sc">$</span>predicted_price <span class="ot">&lt;-</span> lin_mod<span class="sc">$</span>fitted.values</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(casas, <span class="fu">aes</span>(<span class="at">x =</span> size, <span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> size, <span class="at">yend =</span> predicted_price), <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="r-squared_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="r-cuadrado-cálculo" class="level2">
+<h2 class="anchored" data-anchor-id="r-cuadrado-cálculo">R cuadrado cálculo</h2>
+<div class="cell">
+<details open="">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Total Sum of Squares. SUM of (y_i - y_mean)^2</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((casas<span class="sc">$</span>price <span class="sc">-</span> mean_price)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum of Squares of Residuals. SUM of (y_i - y_hat)^2</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>RSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((casas<span class="sc">$</span>price <span class="sc">-</span> casas<span class="sc">$</span>predicted_price)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># R^2</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>R_s <span class="ot">&lt;-</span> (TSS <span class="sc">-</span> RSS)<span class="sc">/</span>(TSS)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo obtenido lm</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>R_s_lm <span class="ot">&lt;-</span> <span class="fu">summary</span>(lin_mod)<span class="sc">$</span>r.squared</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(R_s, R_s_lm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7544956 0.7544956</code></pre>
+</div>
+</div>
+<p>Note que <span class="math display">\[ R^2 = \dfrac{TSS-RSS}{TSS} = \dfrac{TSS}{TSS} - \dfrac{RSS}{TSS} \]</span></p>
+<p><span class="math display">\[ R^2 = 1 - \dfrac{RSS}{TSS}\]</span></p>
+<p>Para nuestro ejemplo:</p>
+<p><span class="math display">\[ R^2 = \dfrac{
+                \overbrace{11647}^{\text{VAR a explicar}}     
+                -
+                \overbrace{2859}^{\text{VAR NO explicada por modelo}}
+                }
+                {
+                \underbrace{11647}_{\text{VAR a explicar}}
+                }
+       = \dfrac{
+                \overbrace{11647 - 2859}^{\text{VAR explicada por el modelo}}  
+                }
+                {
+                \underbrace{11647}_{\text{VAR a explicar}}
+                }
+      = 0.7545\]</span></p>
+<p><span class="math inline">\(R^2\)</span> establece el porcentaje de variación en el <strong>precio (variable respuesta)</strong> que es explicado por el modelo, es decir, por el <strong>tamaño (variable explicativa)</strong>. En nuestro ejemplo, el 75.45% de variación en el precio es explicado por el tamaño.</p>
 
 
 </section>
@@ -459,13 +489,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Inicio</span></span>
+      <a href="../01-p-values/p-values.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Valor p</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../02-r-squared/r-squared.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R Cuadrado</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../03-bayes-theorem/bayes-theorem.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Teorema de Bayes</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
