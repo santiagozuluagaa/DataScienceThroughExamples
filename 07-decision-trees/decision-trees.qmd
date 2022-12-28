@@ -24,9 +24,9 @@ options(scipen = 999)
 
 Se tienen datos sobre 10 pasajeros del titanic, se conoce:
 
-* survive: Sobrevivió al hundimiento o no.
-* class: Primera o segunda clase.
-* sex: Hombre o mujer.
+-   survive: Sobrevivió al hundimiento o no.
+-   class: Primera o segunda clase.
+-   sex: Hombre o mujer.
 
 ```{r}
 # Read data
@@ -36,8 +36,6 @@ kable(titanic)
 ```
 
 ## Árbol de decisión
-
-
 
 ```{r}
 #| code-fold: show
@@ -70,7 +68,7 @@ Note que $\text{Gini(sex) = 0.267 < Gini(class) = 0.4}$, por lo que la raíz del
 
 ### Siguiente rama
 
-Note que cuando sex = men es falso, es decir, cuando se trata de una mujer, todos los casos conducen a que sobrevive, en otras palabras, tanto mujeres de primera como de segunda clase se salvan. 
+Note que cuando sex = men es falso, es decir, cuando se trata de una mujer, todos los casos conducen a que sobrevive, en otras palabras, tanto mujeres de primera como de segunda clase se salvan.
 
 ![](tree-part-1.png)
 
@@ -85,8 +83,3 @@ Así, se obtiene el siguiente árbol, que coincide con el obtenido por la funci�
 ## Gini Impurity (intuitivamente)
 
 ![](GiniImpurity)
-
-
-
-
-

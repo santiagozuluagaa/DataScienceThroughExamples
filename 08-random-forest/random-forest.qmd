@@ -1,0 +1,255 @@
+---
+title: "Random Forest"
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+## Librerías
+
+```{r}
+#| warning: false
+#| code-fold: false
+library(knitr)
+library(ggplot2)
+library(ggpubr)
+library(cowplot)
+library(randomForest)
+library(dplyr)
+library(tidyr)
+library(caret)
+```
+
+## Preparación de datos
+
+Utilizaremos el siguiente dataset sobre diabetes [disponible en Kaggle](https://www.kaggle.com/datasets/kandij/diabetes-dataset). Todos los pacientes pertenecen a la herencia indígena pima (subgrupo de nativos americanos) y son mujeres de 21 años o más.
+
+```{r}
+#| code-fold: false
+diabetes <- read.csv("diabetes2.csv")
+```
+
+## Exploración de datos
+
+### Estructura
+
+```{r}
+kable(head(diabetes))
+```
+
+### Descripción
+
+|       **Variable**       | **Descripción**                                                                |
+|:------------------------:|--------------------------------------------------------------------------------|
+|       Pregnancies        | Número de embarazos.                                                           |
+|         Glucose          | Glucosa (en la sangre).                                                        |
+|       BloodPresure       | Presión sanguínea.                                                             |
+|      SkinThickness       | Grosor de la piel.                                                             |
+|         Insulin          | Insulina.                                                                      |
+|           BMI            | Índice de masa corporal.                                                       |
+| DiabetesPedigreeFunction | Puntaje que mide la posibilidad de tener diabetes basado en historia familiar. |
+|           Age            | Edad.                                                                          |
+|         Outcome          | 0: No diabetes, 1: Sí diabetes                                                 |
+
+```{r}
+#| code-fold: false
+str(diabetes)
+```
+
+```{r}
+#| code-fold: false
+table(diabetes$Outcome) 
+```
+
+Con `table` obtenemos la distribución de pacientes en el dataset en relación a si tienen Diabetes o no:
+
+-   500 pacientes SIN diabetes
+-   268 pacientes CON diabetes
+
+Note que `Outcome` aparece como variable numérica, se cambiará a variable categórica.
+
+```{r}
+#| code-fold: false
+
+diabetes$Outcome <- as.factor(diabetes$Outcome)
+```
+
+### Visualización
+
+```{r}
+pGlucoseOutcome <- ggplot(diabetes, aes(x = Glucose, fill = Outcome)) +
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
+
+pBMIOutcome <- ggplot(diabetes, aes(x = BMI, fill = Outcome)) +
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
+
+pAgeOutcome <- ggplot(diabetes, aes(x = Age, fill = Outcome)) +
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
+
+pPregnanciesOutcome <- ggplot(diabetes, aes(x = Pregnancies, fill = Outcome)) +
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
+
+ggarrange(pGlucoseOutcome, pBMIOutcome, pAgeOutcome, pPregnanciesOutcome,
+          ncol = 2, nrow = 2)
+```
+
+## Random Forest
+
+### Datos de entrenamiento y de prueba
+
+```{r}
+#| code-fold: false
+# Número de pacientes en el dataset
+n <- nrow(diabetes)
+
+# Se muestrea aleatoriamente una proporción p de pacientes para el
+# dataset de prueba
+p <- 0.20
+pacientes_test <- ceiling(p * n) # Se redondea el número
+
+# Se muestrean aleatoriamente p * n indexes 
+set.seed(110) # Semilla
+index_test <- sample(1:n, size = pacientes_test)
+
+# Test y train datasets
+diabetes_test <- diabetes[index_test,]
+diabetes_train <- diabetes[-index_test,]
+```
+
+### Ajuste del modelo
+
+```{r}
+#| eval: false
+#| code-fold: false
+rFmodel <- randomForest(
+                        Outcome ~ .,  
+                        data = diabetes_train,
+                        proximity = TRUE,
+                        ntree = 1000 
+                        )
+```
+
+```{r}
+#| include: false
+
+# Save and load the model
+
+#saveRDS(rFmodel, file = "rFmodel.rds")
+rFmodel <- readRDS("rFmodel.rds")
+```
+
+### Resumen del modelo
+
+```{r}
+#| code-fold: false
+rFmodel
+```
+
+Usando datos Out Of Bag (OOB, más adelante veremos este concepto), se tiene respecto a la base de entrenamiento que:
+
+* De 386 pacientes SIN diabetes (0), 327 son clasificados correctamente (Outcome = 0) y 59 son clasificados incorrectamente (Outcome = 1). El error de clasificación para esta clase es de $\dfrac{59}{327+59} = \dfrac{59}{386} = 0.153$.
+
+* De 228 pacientes CON diabetes (1), 139 son clasificados correctamente (Outcome = 1) y 89 son clasificados incorrectamente (Outcome = 0). El error de clasificación para esta clase es $\dfrac{89}{89+139}=\dfrac{89}{228} = 0.390$.
+
+### ¿Cuántos árboles (trees) son necesarios?
+
+#### Out of Bag
+
+![](random-forest/Diapositiva1.png)
+
+![](random-forest/Diapositiva2.png)
+
+Con el Out of Bag (OOB) Error , ya que es similar a Leave One Out, no es necesario realizar cross validation. **Esto implica que sería posible entrenar el Random Forest con toda la base de datos**. 
+
+#### Parámetro ntree
+
+Ahora, para determinar el número de Decision Trees necesarios, se analiza el comportamiento del OOB respecto al número de Decision Trees.
+
+```{r}
+# Dataframe for saving OOB 
+oob_error_date <- as.data.frame(rFmodel$err.rate) %>% 
+                    mutate(trees = row_number())  %>% 
+                    pivot_longer(
+                                 cols = c("OOB", "1", "0"),
+                                 names_to = "type",
+                                 values_to = "error"
+                                 )
+
+ggplot(oob_error_date, aes(x = trees, y = error, color = type)) +
+  geom_line()
+```
+
+Se selecciona un valor para el cual se estabilice el OOB, en este caso, podría ser 750.
+
+### MDS plot
+
+```{r}
+#| code-fold: show
+# Code from: Josh Starmer (StatQuest)
+# TODO: Analysis
+
+distance_matrix <- dist(1-rFmodel$proximity)
+mds <- cmdscale(distance_matrix, eig = TRUE, x.ret = TRUE)
+mds_var_per <- round(mds$eig/sum(mds$eig) * 100, 1)
+
+mds_values <- mds$points
+mds_data <- data.frame(
+  Sample = rownames(mds_values),
+  X = mds_values[,1],
+  Y = mds_values[,2],
+  Status = diabetes_train$Outcome)
+
+ggplot(data = mds_data, aes(x = X, y = Y, label = Sample))+
+  geom_text(aes(color = Status), size = 2)
+```
+
+## Comparación con Regresión Logística
+
+### Ajuste de modelo de regresión logística
+
+```{r}
+#| code-fold: false
+# define training control
+train_control <- trainControl(method = "cv", number = 10)
+
+set.seed(999)
+# train the model on training set
+rLmodel <- train(
+               Outcome ~ .,
+               data = diabetes_train,
+               trControl = train_control,
+               method = "glm",
+               family=binomial()
+               )
+
+# print scores
+1-rLmodel$results[,"Accuracy"]
+```
+
+### Prediccion con datos de prueba (test)
+
+```{r}
+#| code-fold: false
+rF_prediction <- predict(rFmodel, newdata = diabetes_test)
+rL_prediction <- predict(rLmodel, newdata = diabetes_test, type = "raw") 
+
+predictions_test <- data.frame(observed = diabetes_test$Outcome,
+                               rF = rF_prediction,
+                               rL = rL_prediction)
+
+```
+
+```{r}
+#| code-fold: false
+table(predictions_test$rL, predictions_test$observed)
+```
+
+```{r}
+#| code-fold: false
+table(predictions_test$rF, predictions_test$observed)
+```
+
+

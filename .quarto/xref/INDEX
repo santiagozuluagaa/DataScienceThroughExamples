@@ -28,5 +28,8 @@
   },
   "09-k-means/k-means.qmd": {
     "k-means.html": "78991038"
+  },
+  "08-random-forest/random-forest.qmd": {
+    "random-forest.html": "3331c80f"
   }
 }
